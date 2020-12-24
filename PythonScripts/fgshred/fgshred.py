@@ -1,5 +1,6 @@
 
 import time
+import subprocess
 from datetime import datetime
 from fgshred_lib import *
 
@@ -12,9 +13,9 @@ def main():
     currently_attached_drives_list = []
     currently_wiping_drives_list = []
     shred_mode_enabled = False
+    global parent_working_directory
 
-    #initialize the fgshred library
-    init_fgshred()
+    parent_working_directory = system_call_with_output('pwd').strip('\n')
 
     #enter safe mode before starting main loop
     enter_safe_mode()
@@ -52,10 +53,15 @@ def main():
             for drive in list(set(currently_attached_drives_list) - set(protected_drives_list)):
             
                 if drive not in currently_wiping_drives_list:
+                    
                     #start wiping drive
                     print("Starting wipe script for " + str(drive))
-
-
+                    print("pwd is: " + parent_working_directory)
+                    command = '--command=python3 ' + parent_working_directory + '/shred_drive.py ' + str(drive)
+                    #subprocess.call(['gnome-terminal', '-x', str(command)])
+                    #subprocess.Popen(r"sudo python3 shred_drive.py " + str(drive), creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    subprocess.Popen(args=["gnome-terminal", str(command)])
+                    
                     #add drive to currently wiping drives
                     currently_wiping_drives_list.append(str(drive))
 
@@ -68,4 +74,24 @@ def main():
                 counter = time.time()
                 now = datetime.now()
                 print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + drive_list_to_string(currently_wiping_drives_list))
-main()
+
+def print_startup_info():
+
+    print('''
+    Welcome to the Free Geek Shred Program! :)
+
+    This program is used to delete data on hard drives. It begins in safe mode,
+    which will protect any drives attached (internal or external) from being
+    shredded.
+
+    Switching from safe mode to shred mode will enable hard drive shredding.
+    This program will automatically begin shredding any newly detected drives 
+    while in shred mode. This mean if you attach a hard drive while in shred mode,
+    data on that drive will automatically be DESTROYED.
+
+    NOTE: All protected drives should be connected for a minimum of a minute
+    before starting this script. Verify the protected device list looks 
+    correct before entering shred mode\n''')
+    
+if __name__ == "__main__":
+    main()

@@ -2,13 +2,6 @@ import os
 import subprocess
 import re
 
-def init_fgshred():
-
-    global parent_working_directory
-
-    print_startup_info()
-    parent_working_directory = system_call_with_output('pwd').strip('\n')
-
 def get_drive_list():
     """
     This function gets attached drives from the OS and returns them as a list 
@@ -32,6 +25,8 @@ def enter_safe_mode():
     """
 
     print('Entering safe mode\n')
+
+    parent_working_directory = system_call_with_output('pwd').strip('\n')
     
     #change background to safe mode 
     system_call_no_output("gsettings set org.gnome.desktop.background picture-uri file://" + str(parent_working_directory) + "/assets/safe_mode.png")
@@ -49,6 +44,8 @@ Entering shred mode
 
 Any drives attached to the system will now begin automatically being 
 data shredding! Be aware...very aware! \n''')
+
+    parent_working_directory = system_call_with_output('pwd').strip('\n')
 
     #change background to safe mode 
     system_call_no_output("gsettings set org.gnome.desktop.background picture-uri file://" + str(parent_working_directory) + "/assets/shred_mode.png")
