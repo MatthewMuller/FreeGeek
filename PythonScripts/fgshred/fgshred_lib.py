@@ -17,7 +17,7 @@ def get_drive_list():
 def drive_list_to_string(drive_list):
 
     #print drive list as comma separated list
-    return (','.join(drive_list) + "\n")
+    return (','.join(drive_list))
 
 def enter_safe_mode():
     """
@@ -40,10 +40,11 @@ def enter_shred_mode():
 ********************
       BE AWARE
 ********************
+
 Entering shred mode
 
 Any drives attached to the system will now begin automatically being 
-data shredding! Be aware...very aware! \n''')
+data shredding! Be aware...be very aware! \n''')
 
     parent_working_directory = system_call_with_output('pwd').strip('\n')
 
