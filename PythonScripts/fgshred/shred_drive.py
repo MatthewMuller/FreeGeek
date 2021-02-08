@@ -1,6 +1,6 @@
 import sys
 import os
-from fgshred_lib import *
+from fg_drive_lib import *
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
     #promt user one last time that they for sure want to shred the drive
     response = input("Are you POSITIVE you want to shred drive " + drive_to_shred + "? Type YES to proceed: ")
     if response == "YES" or response == 'yes':
-        os.system('sudo shred -vf -n 1 /dev/' + drive_to_shred)
+        os.system('sudo shred -vf -n 3 /dev/' + drive_to_shred)
 
         #print hard drive info after starting shred
         print("\n\n" + system_call_with_output("sudo smartctl -i /dev/" + str(drive_to_shred)))

@@ -1,14 +1,12 @@
-
 import time
 import subprocess
 import signal
 from datetime import datetime
-from fgshred_lib import *
+from fg_drive_lib import *
 
 parent_working_directory = ""
 
 def main():
-
 
     protected_drives_list = []
     currently_attached_drives_list = []
@@ -59,9 +57,17 @@ def main():
             
                 #if a new drive is detected
                 if drive not in currently_wiping_drives_list:
-                    
+
+                    print("Processing drive " + str(drive))
+
+                    #delete all partions on connected drive
+                    print("\tWiping all partions")
+                    syscall_output = system_call_with_output("sudo dd if=/dev/zero of=/dev/"+ str(drive) + " bs=512 count=1 conv=notrunc").split("\n")
+                    for line in syscall_output:
+                        print("\t\t" + str(line))
+
                     #start wiping drive
-                    print("Starting wipe script for " + str(drive))
+                    print("\tStarting wipe script")
                     command = 'gnome-terminal -- python3 ' + parent_working_directory + '/shred_drive.py ' + str(drive)
                     os.system(str(command))
                     
@@ -93,6 +99,37 @@ need to restart this script in order to enter shred mode again. Remember to
 let currently shredding hard drives finish before restarting script.''')
     exit(0)
 
+def enter_safe_mode():
+    """
+    Put code to be ran when entering safe mode here
+    """
+
+    print('Entering safe mode\n')
+
+    parent_working_directory = system_call_with_output('pwd').strip('\n')
+    
+    #change background to safe mode 
+    system_call_no_output("gsettings set org.gnome.desktop.background picture-uri file://" + str(parent_working_directory) + "/assets/safe_mode.png")
+
+def enter_shred_mode():
+    """
+    Put code to be ran when entering shred mode here
+    """
+
+    print('''
+********************
+      BE AWARE
+********************
+
+Entering shred mode
+
+Any drives attached to the system will now begin automatically being 
+data shredding! Be aware...be very aware! \n''')
+
+    parent_working_directory = system_call_with_output('pwd').strip('\n')
+
+    #change background to shred mode 
+    system_call_no_output("gsettings set org.gnome.desktop.background picture-uri file://" + str(parent_working_directory) + "/assets/shred_mode.png")
 
 def print_startup_info():
 
