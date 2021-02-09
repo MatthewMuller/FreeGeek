@@ -1,9 +1,15 @@
 import sys
 import os
-from fg_drive_lib import *
+from fg_drive_lib import system_call_with_output
 
 
 def main():
+    """
+    This script does three things:
+        Calls shred on the passed in drive
+        Runs SMART control tests on the drive
+        Prints drive information to console
+    """
 
     drive_to_shred = str(sys.argv[1])
 

@@ -7,6 +7,13 @@ from fg_drive_lib import *
 parent_working_directory = ""
 
 def main():
+    """
+    Main daemon for Free Geek Shred Script. This function
+    is a while loop that runs continuously, which looks 
+    for newly attached drives to wipe. When found, it 
+    wipes all partitions on that drive and launches the
+    shred_drive.py script for that drive.
+    """
 
     protected_drives_list = []
     currently_attached_drives_list = []
@@ -23,7 +30,7 @@ def main():
     enter_safe_mode()
     protected_drives_list = get_drive_list()
     print_startup_info()
-    print("    Protected drive list: " + drive_list_to_string(protected_drives_list) + "\n")
+    print("\tProtected drive list: " + drive_list_to_string(protected_drives_list) + "\n")
 
     #this will run until the user breaks the script
     while True:
@@ -91,6 +98,11 @@ def main():
                 print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + drive_list_to_string(currently_wiping_drives_list))
 
 def signal_handler(sig, frame):
+    """
+    This function catches a Ctrl + C keypress and prints out
+    information about the Free Geek Shred Script closing.
+    """
+
     print("\n") #for formatting
     enter_safe_mode()
     print('''         
@@ -101,7 +113,9 @@ let currently shredding hard drives finish before restarting script.''')
 
 def enter_safe_mode():
     """
-    Put code to be ran when entering safe mode here
+    This function is to be called when the Free Geek Shred
+    Script is entering safe mode. It will change the desktop
+    to the Safe Mode background and return.
     """
 
     print('Entering safe mode\n')
@@ -113,7 +127,10 @@ def enter_safe_mode():
 
 def enter_shred_mode():
     """
-    Put code to be ran when entering shred mode here
+    This function is to be called when the Free Geek Shred
+    Script is entering shred mode. It will print a warning
+    to console and change the desktop to the Shred Mode 
+    background and return.
     """
 
     print('''
@@ -132,6 +149,11 @@ data shredding! Be aware...be very aware! \n''')
     system_call_no_output("gsettings set org.gnome.desktop.background picture-uri file://" + str(parent_working_directory) + "/assets/shred_mode.png")
 
 def print_startup_info():
+    """
+    This function prints information about the Free Geek
+    Shred Script on startup.
+    """
+
 
     print('''
     Welcome to the Free Geek Shred Program! :)
