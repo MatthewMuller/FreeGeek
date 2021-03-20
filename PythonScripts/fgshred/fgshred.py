@@ -35,6 +35,7 @@ def main():
     #this will run until the user breaks the script
     while True:
 
+        #safe mode
         while not shred_mode_enabled:
 
             response = input("CAUTION: Enter shred mode? Type YES: ")
@@ -48,8 +49,9 @@ def main():
             else:
                 print("Sorry, I didnt understand. If you dont want to exit the program, type EXIT\n")
 
-
         counter = time.time()
+
+        #shred mode
         while shred_mode_enabled:
 
             #get currently attached drives

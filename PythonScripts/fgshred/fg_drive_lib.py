@@ -1,6 +1,6 @@
 import os
-import subprocess
 import re
+from system_call import *
 
 def get_drive_list():
     """
@@ -21,22 +21,6 @@ def drive_list_to_string(drive_list):
 
     #print drive list as comma separated list
     return (','.join(drive_list))
-
-
-def system_call_with_output(cmd):
-    """
-    Calls subprocess and returns subprocess output
-    """
-
-    return subprocess.getoutput(cmd)
-
-def system_call_no_output(cmd):
-    """
-    Calls subprocess and returns without subprocess output
-    """
-
-    subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    return
 
 def print_drive_info(drive):
     """
