@@ -37,3 +37,11 @@ def system_call_no_output(cmd):
 
     subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return
+
+def print_drive_info(drive):
+    """
+    Prints the drive's SMART information
+    """
+
+    print(system_call_with_output("sudo smartctl -i /dev/" + str(drive)))
+    return
