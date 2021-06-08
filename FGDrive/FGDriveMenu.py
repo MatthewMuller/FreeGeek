@@ -1,39 +1,39 @@
-from FGShred import *
 import time
 import os
+import signal
 
-def print_menu():
+from FGShred import *
 
-     print('''
+def main():
+
+    # register SIGINT for quitting script
+    signal.signal(signal.SIGINT, signal_handler)
+
+    # clear terminal
+    os.system("clear")
+
+    while (True):
+
+        menu_item = input('''
 ********************************************
 Welcome to FG Drive! What do you want to do?
 
 1: Shred Drives
 2: Image Drives
 3: Check Drive Health
-********************************************
-    '''))
-
-def main():
-
-    #register SIGINT for quitting script
-    signal.signal(signal.SIGINT, signal_handler)
-
-    while (True):
-
-        menu_item = input(print_menu())
+********************************************\n''')
     
          # Shred
-        if(menu_item == "1"):
+        if('1' == str(menu_item) ):
             fg_shred = FGShred(os. getcwd())
-            os.system("clear")
+            #os.system("clear")
             fg_shred.run()
         # Image
-        elif(menu_item == "2"):
+        elif('2' == menu_item):
 
             print("Not Implemented")
         # Drive Health
-        elif(menu_item == "3"):
+        elif('3' == menu_item):
             print("Not Implemented")
         else:
             print("Yikes! Bad input!")
@@ -41,14 +41,7 @@ def main():
             os.system("clear")
 
 def signal_handler(sig, frame):
-    """
-    This function catches a Ctrl + C keypress and prints out
-    information about the Free Geek Shred Script closing.
-    """
-
-    print("\n") #for formatting
-    enter_safe_mode()
-    print('''         
+    print('''\n         
 Currently wiping drives will continue to wipe. You will
 need to restart this script in order to enter shred mode again. Remember to
 let currently shredding hard drives finish before restarting script.''')

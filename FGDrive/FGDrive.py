@@ -1,14 +1,21 @@
-class FGDrive:
-    
-    self.wiping_list
-    self.imaging_list
-    
-    def __init__(self, pwd):
-        self.pwd = pwd
-        self.protected_list = get_drive_list().sort()
-        self.connected_drive_list = get_drive_list().sort()
+import re
 
-        __print_startup_info__()
+from FGUtil import *
+
+class FGDrive:
+
+    wiping_list = []
+    protected_list = []
+    connected_drive_list = []
+    imaging_list = []
+
+    def __init__(self, pwd):
+
+        self.protected_list = self.get_drive_list().copy()
+        self.protected_list.sort()
+        self.connected_drive_list = self.get_drive_list().copy()
+        self.connected_drive_list.sort()
+        self.pwd = str(pwd)
 
     def get_drive_list(self):
         """
@@ -29,7 +36,8 @@ class FGDrive:
         return self.connected_drive_list
 
     def update_connected_drive_list(self):
-        connected_drive_list = get_drive_list().sort()
+        self.connected_drive_list = self.get_drive_list().copy()
+        self.connected_drive_list.sort()
 
     def get_pwd(self):
         return self.pwd
@@ -40,27 +48,19 @@ class FGDrive:
     def add_wiping_drive(self, drive):
         self.wiping_list.append(str(drive))
     
-    def remove_wiping_drive(self, dive):
+    def remove_wiping_drive(self, drive):
         self.wiping_list.remove(str(drive))
 
-    def drive_list_to_string():
-        #print drive list as comma separated list
-        return (','.join(drive_list))
+    def drive_list_to_string(self, drive_list):
+        return ','.join(drive_list)
 
     def print_short_drive_info(self, drive):
-        """
-        Prints the drive's SMART information
-        """
-
         print(system_call_with_output("sudo smartctl -i /dev/" + str(drive)))
-        return
 
-    def print_long_drive_info(self. drive):
-        """
-        Prints the drive's SMART information
-        """
-
+    def print_long_drive_info(self, drive):
         print(system_call_with_output("sudo smartctl -a /dev/" + str(drive)))
-        return
-    
- 
+
+    def wipe_partitions(self, drive):
+        syscall_output = system_call_with_output("sudo dd if=/dev/zero of=/dev/"+ str(drive) + " bs=512 count=1 conv=notrunc").split("\n")
+        for line in syscall_output:
+            print("\t\t" + str(line))
