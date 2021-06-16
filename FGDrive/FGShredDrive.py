@@ -1,51 +1,58 @@
 import sys
 import os
+import time
+
 from system_call import *
+from FGDrive import *
 
 
 def main():
     """
-    This script does three things:
-        * Calls shred on the passed in drive
-        * Runs SMART control tests on the drive
-        * Prints drive information to console
+    This script will print hard drive info and shred the drive.
     """
 
-    drive_to_shred = str(sys.argv[1])
+    # register SIGINT for quitting script
+    signal.signal(signal.SIGINT, signal_handler)
+
+    drive_to_shred = FGDrive(str(sys.argv[1]))
     short_test_running = True
 
-    #print hard drive info before starting shred
-    print(system_call_with_output("sudo smartctl -i /dev/" + str(drive_to_shred)))
+    # print hard drive info before starting shred
+    drive_to_shred.print_short_drive_info()
+    drive_to_shred.print_hd_health(drive)
 
-    #promt user one last time that they for sure want to shred the drive
-    response = input("Are you POSITIVE you want to shred drive " + drive_to_shred + "? Type YES to proceed: ")
-    if response == "YES" or response == 'yes':
-        os.system('sudo shred -vf -n 3 /dev/' + drive_to_shred)
-    else:
+    print('If errors are over threshold, close script and spike the drive')
+
+    # promt user one last time that they for sure want to shred the drive
+    response = str(input("Are you POSITIVE you want to shred drive " + drive_to_shred.get_device_name() + "? Type YES to proceed: "))
+    
+    # Only continue if user typed yes
+    if response.lower() != "yes":
         print('''
 You didnt type YES. Aborting shredding.
 Unplug and reconnect drive to restart shredding process"''')
+        end_script()
 
-    #systemctl short test
-    print(system_call_with_output("sudo smartctl -t short /dev/" + str(drive_to_shred)))
-
-    #print test results
-    while(short_test_running):
-        system_call_with_output("sudo smartctl -t short /dev/" + str(drive_to_shred))
-
-    #print health
-
-    #print relevant HD stats from systemctl
+    # Shred the drive contents (3 passes)
+    os.system('sudo shred -vf -n 2 /dev/' + drive_to_shred)
 
     #print hard drive info one last time
-    print("\n\n" + system_call_with_output("sudo smartctl -i /dev/" + str(drive_to_shred)))
+    drive_to_shred.print_short_drive_info()
+    drive_to_shred.print_hd_health(drive)
 
+    end_script()
 
-
+def end_script():
+    # keep window open so user can read output. They can close
+    # the terminal to close the script 
     while(True):
-        #keep window open so user can read output. They can close
-        #the terminal to close the script
-        pass
+        time.sleep(5)
+
+def signal_handler(sig, frame):
+    print('''\n
+Stopping shred script. If drive was not done shredding, 
+reconnect drive and shred again. You can safely close this window''')
+    exit(0)
 
 if __name__ == "__main__":
     main()

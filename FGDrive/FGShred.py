@@ -2,13 +2,13 @@ import time
 import os
 from datetime import datetime
 
-from FGDrive import *
+from FGDriveList import *
 
 class FGShred:
 
     def __init__(self, pwd):
         self.mode = "safe"
-        self.fg_drive = FGDrive(pwd)
+        self.fg_drivelist = FGDriveList(pwd)
         self.print_startup_info()
 
     def print_startup_info(self):
@@ -83,7 +83,7 @@ class FGShred:
 
         # enter safe mode before starting main loop
         self.safe_mode()
-        print("\tProtected drive list: " + self.fg_drive.drive_list_to_string(self.fg_drive.get_protected_drive_list()) + "\n")
+        print("\tProtected drive list: " + self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_protected_drive_list()) + "\n")
 
         # this will run until the user breaks the script
         while True:
@@ -107,33 +107,33 @@ class FGShred:
             while self.mode == "shred":
 
                 # Update the connected drive list
-                self.fg_drive.update_connected_drive_list()
+                self.fg_drivelist.update_connected_drive_list()
 
                 # for drives not in protected drive list
-                for drive in list(set(self.fg_drive.get_connected_drive_list()) - set(self.fg_drive.get_protected_drive_list())):
+                for drive in list(set(self.fg_drivelist.get_connected_drive_list()) - set(self.fg_drivelist.get_protected_drive_list())):
                 
                     # if a new drive is detected
-                    if drive not in self.fg_drive.get_wiping_drive_list():
+                    if drive not in self.fg_drivelist.get_wiping_drive_list():
 
                         print("Processing drive " + str(drive))
 
                         # delete all partions on connected drive
                         print("\tWiping all partions")
-                        self.fg_drive.wipe_partitions(str(drive))
+                        self.fg_drivelist.wipe_partitions(str(drive))
 
                         # call shred script on drive
                         print("\tStarting wipe script")
-                        command = 'gnome-terminal -- python3 ' + self.fg_drive.get_pwd() + '/shred_drive.py ' + str(drive)
+                        command = 'gnome-terminal -- python3 ' + self.fg_drivelist.get_pwd() + '/shred_drive.py ' + str(drive)
                         os.system(str(command))
                         
                         # add drive to currently wiping drives
-                        self.fg_drive.add_wiping_drive(str(drive))
+                        self.fg_drivelist.add_wiping_drive(str(drive))
 
                 # Check for disconnected drives
-                for drive in self.fg_drive.get_wiping_drive_list():
-                    if drive not in self.fg_drive.get_connected_drive_list():
+                for drive in self.fg_drivelist.get_wiping_drive_list():
+                    if drive not in self.fg_drivelist.get_connected_drive_list():
                         print("Drive " + str(drive) + " no longer connected.")
-                        self.fg_drive.remove_wiping_drive(str(drive))
+                        self.fg_drivelist.remove_wiping_drive(str(drive))
 
                 #give that CPU a break! :)
                 time.sleep(5)
@@ -143,4 +143,4 @@ class FGShred:
                 if time.time() - counter > 30:
                     counter = time.time()
                     now = datetime.now()
-                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drive.drive_list_to_string(self.fg_drive.get_wiping_drive_list)))
+                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_wiping_drive_list)))

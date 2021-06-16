@@ -30,7 +30,6 @@ Welcome to FG Drive! What do you want to do?
             fg_shred.run()
         # Image
         elif('2' == menu_item):
-
             print("Not Implemented")
         # Drive Health
         elif('3' == menu_item):
