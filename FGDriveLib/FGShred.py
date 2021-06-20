@@ -10,7 +10,6 @@ class FGShred:
     def __init__(self, pwd):
         self.mode = "safe"
         self.fg_drivelist = FGDriveList(pwd)
-        self.print_startup_info()
 
     def print_startup_info(self):
         """
@@ -81,6 +80,9 @@ class FGShred:
         partitions on that drive and launches the 
         shred_drive.py script for that drive.
         """
+        
+        # print startup info
+        self.print_startup_info()
 
         # enter safe mode before starting main loop
         self.safe_mode()

@@ -3,6 +3,7 @@ import os
 import signal
 
 import FGShred
+import FGImage
 
 def main():
 
@@ -25,12 +26,14 @@ Welcome to FG Drive! What do you want to do?
     
          # Shred
         if('1' == str(menu_item) ):
+            os.system("clear")
             fg_shred = FGShred(os. getcwd())
-            #os.system("clear")
             fg_shred.run()
         # Image
         elif('2' == menu_item):
-            print("Not Implemented")
+            os.system("clear")
+            fg_image = FGImage(os. getcwd())
+            fg_image.run()
         # Drive Health
         elif('3' == menu_item):
             print("Not Implemented")

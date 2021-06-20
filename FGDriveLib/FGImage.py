@@ -68,6 +68,9 @@ class FGImage:
         image_drive.py script for that drive.
         """
 
+        # print startup info
+        self.print_startup_info()
+
         # enter safe mode before starting main loop
         self.safe_mode()
         print("\tProtected drive list: " + self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_protected_drive_list()) + "\n")
@@ -127,4 +130,4 @@ class FGImage:
                 if time.time() - counter > 30:
                     counter = time.time()
                     now = datetime.now()
-                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being image: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_in_progress_list)))
+                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being imaged: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_in_progress_list)))
