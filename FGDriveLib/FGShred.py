@@ -2,7 +2,8 @@ import time
 import os
 from datetime import datetime
 
-from FGDriveList import *
+import FGDriveList
+from FGUtil import *
 
 class FGShred:
 
@@ -14,7 +15,7 @@ class FGShred:
     def print_startup_info(self):
         """
         This function prints information about the Free Geek
-        Shred Script on startup.
+        Shred Program on startup.
         """
 
         print('''
@@ -63,8 +64,8 @@ class FGShred:
 
     Entering shred mode
 
-    Any drives attached to the system will now begin automatically being 
-    data shredding! Be aware...be very aware! \n''')
+    Any drives attached to the system will now begin automatically 
+    shreddingdata! Be aware...be very aware! \n''')
 
         self.mode = "shred"
         parent_working_directory = system_call_with_output('pwd').strip('\n')
@@ -93,14 +94,15 @@ class FGShred:
 
                 response = input("CAUTION: Enter shred mode? Type YES: ")
                 print(str(response))
-                if str(response) == 'EXIT' or str(response) == 'exit':
+                if str(response).lower() == 'exit':
                     exit()
-                elif str(response) == 'YES' or str(response) == 'yes':
+                elif str(response).lower() == 'yes':
                     # user has agreed to enter shred mode
                     self.shred_mode()
                 else:
-                    print("Sorry, I didnt understand. If you dont want to exit the program, type EXIT\n")
+                    print("Sorry, I didnt understand. If you want to exit the program, type EXIT\n")
 
+            # Set counter before starting next loop
             counter = time.time()
 
             #shred mode
@@ -113,27 +115,23 @@ class FGShred:
                 for drive in list(set(self.fg_drivelist.get_connected_drive_list()) - set(self.fg_drivelist.get_protected_drive_list())):
                 
                     # if a new drive is detected
-                    if drive not in self.fg_drivelist.get_wiping_drive_list():
+                    if drive not in self.fg_drivelist.get_in_progress_list():
 
                         print("Processing drive " + str(drive))
 
-                        # delete all partions on connected drive
-                        print("\tWiping all partions")
-                        self.fg_drivelist.wipe_partitions(str(drive))
-
                         # call shred script on drive
                         print("\tStarting wipe script")
-                        command = 'gnome-terminal -- python3 ' + self.fg_drivelist.get_pwd() + '/shred_drive.py ' + str(drive)
+                        command = 'gnome-terminal -- python3 ' + self.fg_drivelist.get_pwd() + '/ShredDrive.py ' + str(drive)
                         os.system(str(command))
                         
                         # add drive to currently wiping drives
-                        self.fg_drivelist.add_wiping_drive(str(drive))
+                        self.fg_drivelist.add_in_progress_drive(str(drive))
 
                 # Check for disconnected drives
-                for drive in self.fg_drivelist.get_wiping_drive_list():
+                for drive in self.fg_drivelist.get_in_progress_list():
                     if drive not in self.fg_drivelist.get_connected_drive_list():
                         print("Drive " + str(drive) + " no longer connected.")
-                        self.fg_drivelist.remove_wiping_drive(str(drive))
+                        self.fg_drivelist.remove_in_progress_drive(str(drive))
 
                 #give that CPU a break! :)
                 time.sleep(5)
@@ -143,4 +141,4 @@ class FGShred:
                 if time.time() - counter > 30:
                     counter = time.time()
                     now = datetime.now()
-                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_wiping_drive_list)))
+                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_in_progress_list)))

@@ -2,7 +2,7 @@ import time
 import os
 import signal
 
-from FGShred import *
+import FGShred
 
 def main():
 

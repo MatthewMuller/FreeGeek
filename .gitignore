@@ -1,5 +1,10 @@
+# python cache
 PythonScripts/fgshred/__pycache__/*
 FGDrive/__pycache__/*
 PythonScripts/fgshred/fgshred_lib.pyc
+
+# VS code information
 .vscode/*
 
+# images
+images/*

@@ -1,13 +1,13 @@
 import re
 
+import FGDrive
 from FGUtil import *
 
 class FGDriveList:
 
-    wiping_list = []
+    in_progress_list = []
     protected_list = []
     connected_drive_list = []
-    imaging_list = []
 
     def __init__(self, pwd):
 
@@ -51,14 +51,14 @@ class FGDriveList:
         self.connected_drive_list = self.get_attached_drive_list().copy()
         self.connected_drive_list.sort()
 
-    def get_wiping_drive_list(self):
-        return self.wiping_list
+    def get_in_progress_list(self):
+        return self.in_progress_list
 
-    def add_wiping_drive(self, drive):
-        self.wiping_list.append(FGDrive(str(drive)))
+    def add_in_progress_drive(self, drive):
+        self.in_progress_list.append(FGDrive(str(drive)))
     
-    def remove_wiping_drive(self, drive):
-        self.wiping_list.remove(FGDrivestr(drive))
+    def remove_in_progress_drive(self, drive):
+        self.in_progress_list.remove(FGDrive(str(drive)))
 
     def drive_list_to_string(self, drive_list):
         return ','.join(drive_list)

@@ -1,9 +1,10 @@
 import sys
 import os
 import time
+import signal
 
-from system_call import *
-from FGDrive import *
+import FGDrive
+from FGUtil import *
 
 
 def main():
@@ -15,13 +16,12 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
 
     drive_to_shred = FGDrive(str(sys.argv[1]))
-    short_test_running = True
 
     # print hard drive info before starting shred
     drive_to_shred.print_short_drive_info()
-    drive_to_shred.print_hd_health(drive)
+    drive_to_shred.print_hd_health()
 
-    print('If errors are over threshold, close script and spike the drive')
+    print('\IMPORTANT: If errors are over threshold, close script and spike the drive')
 
     # promt user one last time that they for sure want to shred the drive
     response = str(input("Are you POSITIVE you want to shred drive " + drive_to_shred.get_device_name() + "? Type YES to proceed: "))
@@ -30,15 +30,20 @@ def main():
     if response.lower() != "yes":
         print('''
 You didnt type YES. Aborting shredding.
-Unplug and reconnect drive to restart shredding process"''')
+Unplug and reconnect drive to restart shredding process''')
         end_script()
 
+    # delete all partions on connected drive
+    print("Wiping all partions")
+    drive_to_shred.wipe_partitions()
+
     # Shred the drive contents (3 passes)
-    os.system('sudo shred -vf -n 2 /dev/' + drive_to_shred)
+    print("Destroying data now")
+    os.system('sudo shred -vf -n 2 /dev/' + drive_to_shred.get_device_name())
 
     #print hard drive info one last time
     drive_to_shred.print_short_drive_info()
-    drive_to_shred.print_hd_health(drive)
+    drive_to_shred.print_hd_health()
 
     end_script()
 
