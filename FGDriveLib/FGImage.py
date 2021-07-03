@@ -2,7 +2,7 @@ import time
 import os
 from datetime import datetime
 
-import FGDriveList
+from FGDriveList import *
 from FGUtil import *
 
 class FGImage:

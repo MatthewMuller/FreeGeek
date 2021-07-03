@@ -3,7 +3,7 @@ import os
 import time
 import signal
 
-import FGDrive
+from FGDrive import *
 from FGUtil import *
 
 

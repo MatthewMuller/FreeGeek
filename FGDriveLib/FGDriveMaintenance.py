@@ -2,8 +2,8 @@ import time
 import os
 import signal
 
-import FGShred
-import FGImage
+from FGShred import *
+from FGImage import *
 
 def main():
 
@@ -27,12 +27,12 @@ Welcome to FG Drive! What do you want to do?
          # Shred
         if('1' == str(menu_item) ):
             os.system("clear")
-            fg_shred = FGShred(os. getcwd())
+            fg_shred = FGShred(os.getcwd())
             fg_shred.run()
         # Image
         elif('2' == menu_item):
             os.system("clear")
-            fg_image = FGImage(os. getcwd())
+            fg_image = FGImage(os.getcwd())
             fg_image.run()
         # Drive Health
         elif('3' == menu_item):

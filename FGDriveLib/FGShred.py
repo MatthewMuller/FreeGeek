@@ -2,7 +2,7 @@ import time
 import os
 from datetime import datetime
 
-import FGDriveList
+from FGDriveList import *
 from FGUtil import *
 
 class FGShred:
@@ -114,26 +114,26 @@ class FGShred:
                 self.fg_drivelist.update_connected_drive_list()
 
                 # for drives not in protected drive list
-                for drive in list(set(self.fg_drivelist.get_connected_drive_list()) - set(self.fg_drivelist.get_protected_drive_list())):
-                
+                for drive in self.fg_drivelist.get_not_protected_drive_list():
+                    
                     # if a new drive is detected
                     if drive not in self.fg_drivelist.get_in_progress_list():
 
-                        print("Processing drive " + str(drive))
+                        print("Processing drive " + drive.get_device_name())
 
                         # call shred script on drive
                         print("\tStarting wipe script")
-                        command = 'gnome-terminal -- python3 ' + self.fg_drivelist.get_pwd() + '/ShredDrive.py ' + str(drive)
+                        command = 'gnome-terminal -- python3 ' + self.fg_drivelist.get_pwd() + '/ShredDrive.py ' + drive.get_device_name()
                         os.system(str(command))
                         
                         # add drive to currently wiping drives
-                        self.fg_drivelist.add_in_progress_drive(str(drive))
+                        self.fg_drivelist.add_in_progress_drive(drive)
 
                 # Check for disconnected drives
                 for drive in self.fg_drivelist.get_in_progress_list():
                     if drive not in self.fg_drivelist.get_connected_drive_list():
-                        print("Drive " + str(drive) + " no longer connected.")
-                        self.fg_drivelist.remove_in_progress_drive(str(drive))
+                        print("Drive " + drive.get_device_name() + " no longer connected.")
+                        self.fg_drivelist.remove_in_progress_drive(drive.get_device_name())
 
                 #give that CPU a break! :)
                 time.sleep(5)
@@ -143,4 +143,4 @@ class FGShred:
                 if time.time() - counter > 30:
                     counter = time.time()
                     now = datetime.now()
-                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_in_progress_list)))
+                    print(now.strftime("%d/%m/%Y %H:%M:%S") + " Drives currently being wiped: " + str(self.fg_drivelist.drive_list_to_string(self.fg_drivelist.get_in_progress_list())))

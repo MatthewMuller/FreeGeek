@@ -2,6 +2,7 @@
 PythonScripts/fgshred/__pycache__/*
 FGDrive/__pycache__/*
 PythonScripts/fgshred/fgshred_lib.pyc
+FGDriveLib/__pycache__/*
 
 # VS code information
 .vscode/*
